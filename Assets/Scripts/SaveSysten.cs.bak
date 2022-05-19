@@ -1,0 +1,107 @@
+
+using System;
+using System.Collections;
+using UnityEngine;
+
+
+public class SaveSysten : MonoBehaviour
+{
+   public float x, y, z;
+   public Transform player;
+   public Stats _stats;
+   public DonDestroyOnLoAD _donDestroy;
+   private void Start()
+   {
+      if (GameObject.Find("Car"))
+      {
+         player = GameObject.Find("Car").transform;
+      }
+      else
+      {
+         return;
+      }
+         
+      
+      _donDestroy = DonDestroyOnLoAD.instance;
+      _stats = GetComponent<Stats>();
+      StartCoroutine(AutoSave());
+      load();
+   }
+
+   private void Update()
+   {
+      if(GameObject.Find("Car"))
+         player = GameObject.Find("Car").transform;
+      
+      if (PlayerPrefs.GetInt("FirstSave") == 1)
+      {
+         Debug.Log("firstSave");
+         FirstSave();
+      }
+   }
+
+   public void save()
+   {
+      savePos();
+      PlayerPrefs.SetFloat("x",x);
+      PlayerPrefs.SetFloat("y",y);
+      PlayerPrefs.SetFloat("z",z);
+      PlayerPrefs.SetFloat("Fuel",_stats.CurrentFuel);
+      PlayerPrefs.SetFloat("Money",_stats.Money);
+      PlayerPrefs.SetInt("Car1",_donDestroy.checkCar);
+      PlayerPrefs.Save();
+   }
+
+   public void saveGarage()
+   {
+      savePos();
+      PlayerPrefs.SetFloat("x",x);
+      PlayerPrefs.SetFloat("y",y);
+      PlayerPrefs.SetFloat("z",z+5f);
+      PlayerPrefs.SetFloat("Fuel",_stats.CurrentFuel);
+      PlayerPrefs.SetFloat("Money",_stats.Money);
+      PlayerPrefs.SetInt("Car1",_donDestroy.checkCar);
+      PlayerPrefs.Save();
+   }
+   public void load()
+   {
+      if (PlayerPrefs.HasKey("x"))
+      {
+         x = PlayerPrefs.GetFloat("x");
+      }
+      if (PlayerPrefs.HasKey("y"))
+      {
+         y = PlayerPrefs.GetFloat("y");
+      }
+      if (PlayerPrefs.HasKey("z"))
+      {
+         z = PlayerPrefs.GetFloat("z");
+      }
+      _stats.CurrentFuel = PlayerPrefs.GetFloat("Fuel");
+      _stats.Money = PlayerPrefs.GetFloat("Money");
+      player.transform.position = new Vector3(x, y, z);
+   }
+   IEnumerator AutoSave()
+   {
+      yield return new WaitForSeconds(300);
+      save();
+      StartCoroutine(AutoSave());
+   }
+
+   public void savePos()
+   {
+      x = player.transform.position.x;
+      y = player.transform.position.y;
+      z = player.transform.position.z;
+   }
+
+   public void FirstSave()
+   {
+      x = -45.34f;
+      y = 41.86f;
+      z = -137.45f;
+      player.transform.position = new Vector3(x, y, z);
+      player.Rotate(new Vector3(0,-90,0));
+      _donDestroy.FirstSaveCompl();
+   }
+}

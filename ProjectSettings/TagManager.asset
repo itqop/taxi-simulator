@@ -3,16 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - CameraPos
+  - Ped
+  - gas
+  - garage
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Enemy
+  - Ped
   - Water
   - UI
-  - Player
-  - 
+  - MapIcon
+  - City
   - 
   - 
   - 
